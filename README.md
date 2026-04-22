@@ -20,33 +20,8 @@ The system demonstrates how embedded flight software manages concurrent tasks, e
 ## 🧠 System Architecture
 
 ### High-Level Architecture
-            +----------------------+
-            |    Command Task      |
-            +----------------------+
-                       |
-                       v
-            +----------------------+
-            |     Event Group      |
-            |   (System State)     |
-            +----------------------+
-               ^              |
-               |              v
-  +----------------------+   +----------------------+
-  |    Telemetry Task    |-->|        Queue         |
-  +----------------------+   +----------------------+
-                                     |
-                                     v
-                            +----------------------+
-                            |    Downlink Task     |
-                            +----------------------+
-                                     |
-                                     v
-                            +----------------------+
-                            |  Health Monitor Task |
-                            +----------------------+
-                                     |
-                                     v
-                             (Updates Event Group)
+          
+ <img width="711" height="727" alt="Image" src="https://github.com/user-attachments/assets/94d684f7-aa46-49d2-a431-b7bda355e321" />
 
 ### Core Components
 - Tasks (4 total)
