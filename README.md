@@ -402,11 +402,12 @@ Telemetry ❌ → Queue (empty) → Downlink ❌
 ---
 
 ### 📊 Expected Logs
+```
 [TELEMETRY] FAULT MODE
 [DOWNLINK] Alert: System in FAULT STATE..
 [MONITOR] ERROR: Telemetry failure
 [MONITOR] ERROR: Downlink failure
-
+```
 ---
 
 ### 🧠 Key Observations
@@ -446,10 +447,12 @@ Telemetry → Queue → Downlink (restored)
 ---
 
 ### 📊 Expected Logs
+```
 [COMMAND] System in FAULT STATE, attempting recovery...
 [TELEMETRY] Generated packet SEQ: X
 [DOWNLINK] Data received...
 [MONITOR] Telemetry and downlink active
+```
 
 ---
 
