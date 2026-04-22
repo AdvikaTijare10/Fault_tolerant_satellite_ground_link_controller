@@ -130,10 +130,6 @@ Telemetry Task → Queue → Downlink Task → Ground
 
 ---
 
-## 🧪 Simulation & Validation
-
-Since no hardware was used, the system was validated using **manual scenario-based simulation and execution tracing**.
-
 ## 🧪 Simulation & Validation Methodology
 
 Since hardware execution was not available, the system was validated using a **manual scenario-based simulation approach**.
