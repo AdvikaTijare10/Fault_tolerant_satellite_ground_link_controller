@@ -221,11 +221,12 @@ Telemetry → Queue → Downlink → Monitor
 ---
 
 ### 📊 Expected Logs
+```
 [COMMAND] Switching to SAFE MODE
 [TELEMETRY] Generated packet SEQ: 1
 [DOWNLINK] Data received...
 [MONITOR] Telemetry and downlink active
-
+```
 ---
 
 ### 🧠 Key Observations
@@ -263,10 +264,11 @@ Telemetry ❌ → Queue (empty) → Downlink (idle)
 ---
 
 ### 📊 Expected Logs
+```
 [TELEMETRY] FAULT MODE
 [MONITOR] ERROR: Telemetry failure
 [COMMAND] System in FAULT STATE, attempting recovery...
-
+```
 
 ---
 
@@ -307,10 +309,11 @@ Telemetry → Queue (data accumulates) → Downlink ❌
 ---
 
 ### 📊 Expected Logs
+```
 [TELEMETRY] Generated packet SEQ: 1
 [MONITOR] ERROR: Downlink failure
 [COMMAND] System in FAULT STATE, attempting recovery...
-
+```
 ---
 
 ### 🧠 Key Observations
@@ -359,11 +362,12 @@ Telemetry (fast) → Queue (FULL) → Downlink (slow)
 ---
 
 ### 📊 Expected Logs
+```
 [TELEMETRY] Generated packet SEQ: 10
 [TELEMETRY] Generated packet SEQ: 11 (dropped)
 [DOWNLINK] Data received...
 [MONITOR] Telemetry and downlink active
-
+```
 ---
 
 ### 🧠 Key Observations
