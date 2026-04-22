@@ -26,7 +26,7 @@ SemaphoreHandle_t serialMutex;
 #define BIT_FAULT_STATE (1<<4)
 
 struct telemetryPacket{
-uint16_t apid; // appliaction id, the packet is cmg from where
+uint16_t apid; // application id, the packet is cmg from where
 uint16_t sequence;// for ordering the packets, incremented with each new packet
 uint32_t timestamp;// when was the data recorded
 uint16_t sensorData; // data from the sensor
