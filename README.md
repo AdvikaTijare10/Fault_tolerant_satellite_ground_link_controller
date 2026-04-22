@@ -496,14 +496,24 @@ The system successfully recovers from fault conditions and resumes normal operat
 
 ---
 
-## 🔮 Future Work
-- Deploy on ESP32 / STM32  
-- Integrate real sensors  
-- Implement Kalman Filter  
-- Add watchdog timer  
-- Add persistent logging  
+## Future Work
+
+- Deploy the system on actual hardware (ESP32 / STM32) to observe real RTOS scheduling and timing behavior  
+- Replace simulated sensor input with real sensors (e.g., IMU, temperature)  
+- Add a watchdog timer to automatically reset the system during critical failures  
+- Extend telemetry packet structure with more realistic parameters (multi-sensor data)  
+- Implement logging to external storage or serial monitor for better debugging and analysis  
+- Explore integrating filtering techniques (e.g., Kalman Filter) for cleaner sensor data  
+
 
 ---
 
-## 💡 Key Takeaway
-This project demonstrates how real-time embedded systems are designed, validated, and tested using scenario-based analysis, similar to real-world aerospace flight software systems.
+## Key Takeaways
+
+- Understood how multiple tasks interact in a real-time system instead of running independently  
+- Learned how event-driven design helps control system behavior without tightly coupling components  
+- Realized that in real-time systems, dropping data is sometimes better than blocking execution  
+- Gained insight into how faults are detected based on system behavior, not just errors  
+- Understood the importance of validating not just normal operation, but also failure scenarios  
+- Learned how to think about systems as a whole rather than focusing on individual functions  
+
