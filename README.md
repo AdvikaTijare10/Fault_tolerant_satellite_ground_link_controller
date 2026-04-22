@@ -134,47 +134,206 @@ Telemetry Task → Queue → Downlink Task → Ground
 
 Since no hardware was used, the system was validated using **manual scenario-based simulation and execution tracing**.
 
-### Methodology
-- Step-by-step time progression  
-- Task-wise execution tracking  
-- State monitoring using event flags  
+## 🧪 Simulation & Validation Methodology
+
+Since hardware execution was not available, the system was validated using a **manual scenario-based simulation approach**.
 
 ---
+
+### ⚙️ Approach
+
+The system was analyzed by simulating execution in discrete time steps (T0, T1, T2...), where each step represents task execution based on RTOS scheduling behavior.
+
+For each scenario:
+- Active tasks were identified  
+- Event group bits were tracked  
+- Queue state was monitored  
+- System outputs were derived from code logic  
+
+---
+
+### 🔍 What Was Tracked
+
+During simulation, the following system components were continuously evaluated:
+
+- **Task behavior** (Command, Telemetry, Downlink, Monitor)  
+- **Event flags** (NORMAL, SAFE, FAULT, TELEMETRY_OK, DOWNLINK_OK)  
+- **Queue state** (empty, filling, full, overflow)  
+- **Data flow** between tasks  
+
+---
+
+### 🧪 Validation Strategy
+
+Instead of testing only normal execution, multiple scenarios were analyzed to validate system robustness:
+
+- Normal operation  
+- Mode switching  
+- Telemetry failure  
+- Downlink failure  
+- Queue overflow (load condition)  
+- Full system failure  
+- Fault recovery  
+
+Each scenario was executed step-by-step to verify:
+- Correct task interaction  
+- Proper event-driven state transitions  
+- Accurate fault detection  
+- Stable system behavior under stress  
+
+---
+
+### 🧠 Key Idea
+
+The focus of validation was not just whether the system works, but how it behaves under different conditions.
+
+This approach ensures:
+- Clear understanding of system dynamics  
+- Verification of real-time design decisions  
+- Confidence in fault handling logic  
+
+---
+
+### ✅ Outcome
+
+The system was successfully validated across all scenarios, demonstrating:
+- Reliable inter-task communication  
+- Correct event-driven control  
+- Robust fault detection and recovery  
+- Stable performance under varying conditions  
 
 ## 🔥 Test Scenarios
 
-### ✅ Scenario 1: Normal Operation
-- Telemetry generates packets  
-- Downlink transmits data  
-- Monitor confirms system health  
+### 🧪 Scenario 1: Normal Operation
 
-**Result:** System operates correctly  
+### 🎯 Objective
+Verify correct system behavior when all subsystems are functioning normally.
 
 ---
 
-### 🔁 Scenario 2: Mode Switching
-- Command toggles NORMAL → SAFE  
-- Telemetry rate decreases  
+### 📊 Execution Trace
 
-**Result:** System adapts correctly  
-
----
-
-### ⚠️ Scenario 3: Telemetry Failure
-- No packets generated  
-- Monitor detects failure  
-
-**Result:** FAULT STATE triggered  
+| Step | Active Task     | Action Performed | System State / Flags |
+|------|----------------|-----------------|----------------------|
+| T0   | Setup          | System initialized, NORMAL_MODE set | NORMAL=1 |
+| T1   | Command Task   | Toggles to SAFE_MODE | SAFE=1 |
+| T2   | Telemetry Task | Generates packet, sends to queue | TELEMETRY_OK=1 |
+| T3   | Downlink Task  | Reads packet from queue | DOWNLINK_OK=1 |
+| T4   | Monitor Task   | Verifies system health | No FAULT |
+| T5   | Next Cycle     | System continues execution | Stable |
 
 ---
 
-### ⚠️ Scenario 4: Downlink Failure
-- Queue not consumed  
-- Data accumulates  
-
-**Result:** FAULT STATE triggered  
+### 📦 Data Flow
+Telemetry → Queue → Downlink → Monitor
 
 ---
+
+### 📊 Expected Logs
+[COMMAND] Switching to SAFE MODE
+[TELEMETRY] Generated packet SEQ: 1
+[DOWNLINK] Data received...
+[MONITOR] Telemetry and downlink active
+
+---
+
+### 🧠 Key Observations
+- Smooth data flow across tasks  
+- Event bits correctly synchronize system  
+- No blocking or delays observed  
+
+---
+
+### ✅ Conclusion
+System operates correctly under normal conditions with stable task coordination and data flow.
+
+## 🧪 Scenario 2: Telemetry Failure
+
+### 🎯 Objective
+Verify that the system detects failure when telemetry data is not generated.
+
+---
+
+### 📊 Execution Trace
+
+| Step | Active Task     | Action Performed | System State / Flags |
+|------|----------------|-----------------|----------------------|
+| T0   | Setup          | System initialized, NORMAL_MODE set | NORMAL=1 |
+| T1   | Telemetry Task | ❌ No packet generated (failure simulated) | TELEMETRY_OK=0 |
+| T2   | Downlink Task  | No data received from queue | DOWNLINK_OK=0 |
+| T3   | Monitor Task   | Detects missing telemetry | FAULT=1 |
+| T4   | Command Task   | Enters recovery mode (skips normal toggle) | FAULT persists |
+
+---
+
+### 📦 Data Flow
+Telemetry ❌ → Queue (empty) → Downlink (idle)
+
+---
+
+### 📊 Expected Logs
+[TELEMETRY] FAULT MODE
+[MONITOR] ERROR: Telemetry failure
+[COMMAND] System in FAULT STATE, attempting recovery...
+
+
+---
+
+### 🧠 Key Observations
+- Absence of telemetry is correctly detected  
+- Downlink remains idle due to empty queue  
+- Monitor triggers FAULT state within one cycle  
+- Command task shifts to recovery behavior  
+
+---
+
+### ✅ Conclusion
+The system successfully detects telemetry failure and transitions to FAULT state, demonstrating effective fault detection and response.
+
+## 🧪 Scenario 3: Downlink Failure
+
+### 🎯 Objective
+Verify that the system detects failure when telemetry is generated but not transmitted via downlink.
+
+---
+
+### 📊 Execution Trace
+
+| Step | Active Task     | Action Performed | System State / Flags |
+|------|----------------|-----------------|----------------------|
+| T0   | Setup          | System initialized, NORMAL_MODE set | NORMAL=1 |
+| T1   | Telemetry Task | Generates packet and pushes to queue | TELEMETRY_OK=1 |
+| T2   | Downlink Task  | ❌ Fails to read from queue (failure simulated) | DOWNLINK_OK=0 |
+| T3   | Queue          | Packet remains in queue (accumulating) | Queue not empty |
+| T4   | Monitor Task   | Detects missing downlink activity | FAULT=1 |
+| T5   | Command Task   | Enters recovery mode | FAULT persists |
+
+---
+
+### 📦 Data Flow
+Telemetry → Queue (data accumulates) → Downlink ❌
+
+---
+
+### 📊 Expected Logs
+[TELEMETRY] Generated packet SEQ: 1
+[MONITOR] ERROR: Downlink failure
+[COMMAND] System in FAULT STATE, attempting recovery...
+
+---
+
+### 🧠 Key Observations
+- Telemetry generation continues normally  
+- Queue begins accumulating packets  
+- Downlink inactivity is correctly detected  
+- Monitor triggers FAULT despite active telemetry  
+
+---
+
+### ✅ Conclusion
+The system correctly identifies downlink failure even when telemetry is functioning, ensuring independent validation of subsystems.
+
+
 
 ### 📦 Scenario 5: Queue Overflow
 - Telemetry faster than downlink  
@@ -183,25 +342,136 @@ Since no hardware was used, the system was validated using **manual scenario-bas
 **Result:** Packet drops observed (non-blocking design)  
 
 ---
+## 🧪 Scenario 4: Queue Overflow
 
-### 🚨 Scenario 6: Full System Fault
-- Telemetry and downlink both fail  
-
-**Result:** System enters FAULT STATE  
-
----
-
-### 🧠 Scenario 7: Recovery
-- System in FAULT state  
-- Command attempts recovery  
-
-**Result:** System returns to NORMAL  
+### 🎯 Objective
+Verify system behavior when telemetry generation rate exceeds downlink consumption rate, leading to queue saturation.
 
 ---
 
-## 📊 Expected Logs
+### 📊 Execution Trace
+
+| Step | Active Task     | Action Performed | System State / Flags |
+|------|----------------|-----------------|----------------------|
+| T0   | Setup          | System initialized | Queue empty |
+| T1   | Telemetry Task | Generates packets rapidly | Queue filling |
+| T2   | Downlink Task  | Slower consumption rate | Queue growing |
+| T3   | Queue          | Reaches max capacity (10 packets) | Queue FULL |
+| T4   | Telemetry Task | Attempts to push → ❌ fails (non-blocking) | Packet dropped |
+| T5   | Monitor Task   | Telemetry + Downlink still active | No FAULT |
 
 ---
+
+### 📦 Data Flow
+Telemetry (fast) → Queue (FULL) → Downlink (slow)
+
+---
+
+### 📊 Expected Logs
+[TELEMETRY] Generated packet SEQ: 10
+[TELEMETRY] Generated packet SEQ: 11 (dropped)
+[DOWNLINK] Data received...
+[MONITOR] Telemetry and downlink active
+
+---
+
+### 🧠 Key Observations
+- Queue reaches capacity under high load  
+- New packets are dropped instead of blocking  
+- Downlink continues processing existing data  
+- System remains stable despite data loss  
+
+---
+
+### ✅ Conclusion
+The system handles overload conditions gracefully by dropping excess packets, ensuring real-time performance without blocking critical tasks.
+
+## 🧪 Scenario 5: Full System Fault
+
+### 🎯 Objective
+Verify system behavior when both telemetry and downlink subsystems fail simultaneously.
+
+---
+
+### 📊 Execution Trace
+
+| Step | Active Task     | Action Performed | System State / Flags |
+|------|----------------|-----------------|----------------------|
+| T0   | Setup          | System initialized | NORMAL=1 |
+| T1   | Telemetry Task | ❌ No packet generated | TELEMETRY_OK=0 |
+| T2   | Downlink Task  | ❌ No data received | DOWNLINK_OK=0 |
+| T3   | Monitor Task   | Detects both failures | FAULT=1 |
+| T4   | System         | Enters FAULT STATE | All tasks adapt behavior |
+
+---
+
+### 📦 Data Flow
+Telemetry ❌ → Queue (empty) → Downlink ❌
+
+---
+
+### 📊 Expected Logs
+[TELEMETRY] FAULT MODE
+[DOWNLINK] Alert: System in FAULT STATE..
+[MONITOR] ERROR: Telemetry failure
+[MONITOR] ERROR: Downlink failure
+
+---
+
+### 🧠 Key Observations
+- Both subsystems fail independently  
+- Monitor detects combined failure condition  
+- System transitions immediately to FAULT state  
+- All tasks modify behavior based on FAULT flag  
+
+---
+
+### ✅ Conclusion
+The system correctly handles complete subsystem failure, demonstrating robust fault detection across multiple components.
+
+## 🧪 Scenario 6: Recovery from Fault
+
+### 🎯 Objective
+Verify that the system attempts recovery and returns to normal operation after a fault condition.
+
+---
+
+### 📊 Execution Trace
+
+| Step | Active Task     | Action Performed | System State / Flags |
+|------|----------------|-----------------|----------------------|
+| T0   | System         | FAULT STATE active | FAULT=1 |
+| T1   | Command Task   | Detects FAULT → initiates recovery delay | Recovery mode |
+| T2   | Telemetry Task | Resumes packet generation | TELEMETRY_OK=1 |
+| T3   | Downlink Task  | Resumes data transmission | DOWNLINK_OK=1 |
+| T4   | Monitor Task   | Detects system restored | FAULT=0 |
+| T5   | System         | Returns to NORMAL MODE | Stable |
+
+---
+
+### 📦 Data Flow
+Telemetry → Queue → Downlink (restored)
+
+---
+
+### 📊 Expected Logs
+[COMMAND] System in FAULT STATE, attempting recovery...
+[TELEMETRY] Generated packet SEQ: X
+[DOWNLINK] Data received...
+[MONITOR] Telemetry and downlink active
+
+---
+
+### 🧠 Key Observations
+- Command task pauses normal operation during fault  
+- System components resume independently  
+- Monitor clears FAULT once both subsystems recover  
+- System returns to stable execution  
+
+---
+
+### ✅ Conclusion
+The system successfully recovers from fault conditions and resumes normal operation, validating fault recovery logic.
 
 ## 🧠 Key Concepts Demonstrated
 - Real-time task scheduling  
