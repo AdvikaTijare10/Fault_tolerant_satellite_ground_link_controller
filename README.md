@@ -251,7 +251,7 @@ Verify that the system detects failure when telemetry data is not generated.
 | Step | Active Task     | Action Performed | System State / Flags |
 |------|----------------|-----------------|----------------------|
 | T0   | Setup          | System initialized, NORMAL_MODE set | NORMAL=1 |
-| T1   | Telemetry Task | ❌ No packet generated (failure simulated) | TELEMETRY_OK=0 |
+| T1   | Telemetry Task | No packet generated (failure simulated) | TELEMETRY_OK=0 |
 | T2   | Downlink Task  | No data received from queue | DOWNLINK_OK=0 |
 | T3   | Monitor Task   | Detects missing telemetry | FAULT=1 |
 | T4   | Command Task   | Enters recovery mode (skips normal toggle) | FAULT persists |
@@ -296,7 +296,7 @@ Verify that the system detects failure when telemetry is generated but not trans
 |------|----------------|-----------------|----------------------|
 | T0   | Setup          | System initialized, NORMAL_MODE set | NORMAL=1 |
 | T1   | Telemetry Task | Generates packet and pushes to queue | TELEMETRY_OK=1 |
-| T2   | Downlink Task  | ❌ Fails to read from queue (failure simulated) | DOWNLINK_OK=0 |
+| T2   | Downlink Task  | Fails to read from queue (failure simulated) | DOWNLINK_OK=0 |
 | T3   | Queue          | Packet remains in queue (accumulating) | Queue not empty |
 | T4   | Monitor Task   | Detects missing downlink activity | FAULT=1 |
 | T5   | Command Task   | Enters recovery mode | FAULT persists |
@@ -351,7 +351,7 @@ Verify system behavior when telemetry generation rate exceeds downlink consumpti
 | T1   | Telemetry Task | Generates packets rapidly | Queue filling |
 | T2   | Downlink Task  | Slower consumption rate | Queue growing |
 | T3   | Queue          | Reaches max capacity (10 packets) | Queue FULL |
-| T4   | Telemetry Task | Attempts to push → ❌ fails (non-blocking) | Packet dropped |
+| T4   | Telemetry Task | Attempts to push →  fails (non-blocking) | Packet dropped |
 | T5   | Monitor Task   | Telemetry + Downlink still active | No FAULT |
 
 ---
@@ -393,8 +393,8 @@ Verify system behavior when both telemetry and downlink subsystems fail simultan
 | Step | Active Task     | Action Performed | System State / Flags |
 |------|----------------|-----------------|----------------------|
 | T0   | Setup          | System initialized | NORMAL=1 |
-| T1   | Telemetry Task | ❌ No packet generated | TELEMETRY_OK=0 |
-| T2   | Downlink Task  | ❌ No data received | DOWNLINK_OK=0 |
+| T1   | Telemetry Task | No packet generated | TELEMETRY_OK=0 |
+| T2   | Downlink Task  |  No data received | DOWNLINK_OK=0 |
 | T3   | Monitor Task   | Detects both failures | FAULT=1 |
 | T4   | System         | Enters FAULT STATE | All tasks adapt behavior |
 
