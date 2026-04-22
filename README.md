@@ -66,7 +66,12 @@ The system demonstrates how embedded flight software manages concurrent tasks, e
 - Triggers FAULT STATE  
 
 ---
+## System Behavior Notes
 
+- Fault recovery is currently handled by pausing the system and re-checking conditions, instead of automatically fixing the failure.
+
+- Task priorities are assigned based on importance, ensuring command and monitoring tasks remain responsive.
+  
 ## 🔄 System States & Transitions
 
 ### Modes
