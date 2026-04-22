@@ -193,9 +193,9 @@ The system was successfully validated across all scenarios, demonstrating:
 - Robust fault detection and recovery  
 - Stable performance under varying conditions  
 
-## 🔥 Test Scenarios
+##  Test Scenarios
 
-### 🧪 Scenario 1: Normal Operation
+###  Scenario 1: Normal Operation
 
 ### 🎯 Objective
 Verify correct system behavior when all subsystems are functioning normally.
@@ -239,7 +239,7 @@ Telemetry → Queue → Downlink → Monitor
 ### ✅ Conclusion
 System operates correctly under normal conditions with stable task coordination and data flow.
 
-## 🧪 Scenario 2: Telemetry Failure
+##  Scenario 2: Telemetry Failure
 
 ### 🎯 Objective
 Verify that the system detects failure when telemetry data is not generated.
@@ -283,7 +283,7 @@ Telemetry ❌ → Queue (empty) → Downlink (idle)
 ### ✅ Conclusion
 The system successfully detects telemetry failure and transitions to FAULT state, demonstrating effective fault detection and response.
 
-## 🧪 Scenario 3: Downlink Failure
+## Scenario 3: Downlink Failure
 
 ### 🎯 Objective
 Verify that the system detects failure when telemetry is generated but not transmitted via downlink.
@@ -336,7 +336,7 @@ The system correctly identifies downlink failure even when telemetry is function
 **Result:** Packet drops observed (non-blocking design)  
 
 ---
-## 🧪 Scenario 4: Queue Overflow
+##  Scenario 4: Queue Overflow
 
 ### 🎯 Objective
 Verify system behavior when telemetry generation rate exceeds downlink consumption rate, leading to queue saturation.
@@ -381,7 +381,7 @@ Telemetry (fast) → Queue (FULL) → Downlink (slow)
 ### ✅ Conclusion
 The system handles overload conditions gracefully by dropping excess packets, ensuring real-time performance without blocking critical tasks.
 
-## 🧪 Scenario 5: Full System Fault
+##  Scenario 5: Full System Fault
 
 ### 🎯 Objective
 Verify system behavior when both telemetry and downlink subsystems fail simultaneously.
@@ -425,7 +425,7 @@ Telemetry ❌ → Queue (empty) → Downlink ❌
 ### ✅ Conclusion
 The system correctly handles complete subsystem failure, demonstrating robust fault detection across multiple components.
 
-## 🧪 Scenario 6: Recovery from Fault
+##  Scenario 6: Recovery from Fault
 
 ### 🎯 Objective
 Verify that the system attempts recovery and returns to normal operation after a fault condition.
